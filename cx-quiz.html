@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CX Room Quiz</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh;display:flex;justify-content:center;padding:1rem}
+.app{width:100%;max-width:420px}
+.screen{display:none}
+.screen.active{display:block}
+.card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.badge{display:inline-block;font-size:12px;padding:3px 10px;border-radius:6px;font-weight:500;margin-right:6px}
+.badge-purple{background:#EEEDFE;color:#3C3489}
+.badge-teal{background:#E1F5EE;color:#0F6E56}
+.badge-amber{background:#FAEEDA;color:#633806}
+h1{font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:0.5rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a}
+h3{font-size:15px;font-weight:600;color:#1a1a1a}
+p{color:#666;font-size:14px;line-height:1.6}
+.btn{display:block;width:100%;padding:11px 16px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-size:14px;cursor:pointer;text-align:left;margin-bottom:8px;transition:background 0.15s;font-family:inherit}
+.btn:hover{background:#f5f5f0}
+.btn.correct{border-color:#0F6E56;background:#E1F5EE;color:#085041;font-weight:500}
+.btn.wrong{border-color:#A32D2D;background:#FCEBEB;color:#791F1F}
+.btn.primary{text-align:center;background:#1a1a1a;color:#fff;border-color:#1a1a1a;font-weight:500}
+.btn.primary:hover{background:#333}
+.btn.secondary{text-align:center}
+.progress-bar{height:4px;background:#e8e8e4;border-radius:2px;margin-bottom:1.25rem}
+.progress-fill{height:100%;background:#1D9E75;border-radius:2px;transition:width 0.3s}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0ec;font-size:14px}
+.stat-row:last-child{border-bottom:none}
+.name-input{width:100%;padding:11px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;margin-bottom:1rem;font-family:inherit;outline:none}
+.name-input:focus{border-color:#666}
+.timer-num{font-size:32px;font-weight:700;color:#1a1a1a;text-align:center}
+.leaderboard-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0ec;font-size:14px}
+.leaderboard-row:last-child{border-bottom:none}
+.rank{width:24px;font-weight:600;color:#666;text-align:center;font-size:13px}
+.lb-name{flex:1;color:#1a1a1a;font-weight:500}
+.lb-score{font-weight:600;color:#0F6E56}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.feedback-box{padding:12px;border-radius:8px;margin:12px 0;font-size:14px;line-height:1.5}
+.feedback-correct{background:#E1F5EE;color:#085041}
+.feedback-wrong{background:#FCEBEB;color:#791F1F}
+.timer-wrap{text-align:center;margin:0.75rem 0 1rem}
+.timer-label{font-size:11px;color:#999;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SCREEN 1: Giriş -->
+<div class="screen active" id="s-intro">
+  <div style="text-align:center;padding:2rem 0 1.5rem">
+    <div style="width:72px;height:72px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:32px">🏆</div>
+    <h1>CX Room Quiz</h1>
+    <p style="margin-top:0.5rem">Müşteri deneyimi bilgini test et,<br>liderlik tablosuna gir!</p>
+  </div>
+  <div class="card">
+    <p style="margin-bottom:0.5rem;color:#1a1a1a;font-size:14px;font-weight:500">Adın nedir?</p>
+    <input class="name-input" id="player-name" type="text" placeholder="Adını gir..." maxlength="20">
+    <div style="margin-bottom:1rem">
+      <span class="badge badge-purple">10 soru</span>
+      <span class="badge badge-teal">20 sn/soru</span>
+      <span class="badge badge-amber">Süre bonusu</span>
+    </div>
+    <button class="btn primary" onclick="startGame()">Oyuna Başla →</button>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:0.75rem">🥇 Liderlik Tablosu</h3>
+    <div id="intro-leaderboard"></div>
+    <button class="btn secondary" style="margin-top:8px;font-size:13px" onclick="showLeaderboard()">Tüm tabloyu gör</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: Oyun -->
+<div class="screen" id="s-game">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+    <span id="q-counter" style="font-size:13px;color:#666"></span>
+    <div>
+      <span style="font-size:13px;color:#666">Puan: </span>
+      <span id="score-display" style="font-weight:600;color:#0F6E56">0</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div class="timer-wrap">
+    <div class="timer-num" id="timer">20</div>
+    <div class="timer-label">saniye</div>
+  </div>
+  <div class="card">
+    <div id="q-category" style="margin-bottom:8px"></div>
+    <h3 id="q-text" style="font-size:15px;line-height:1.6;margin-bottom:1.25rem"></h3>
+    <div id="q-options"></div>
+    <div id="q-feedback" style="display:none"></div>
+    <button class="btn primary" id="next-btn" style="display:none;margin-top:0.5rem" onclick="nextQuestion()">Sonraki Soru →</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: Sonuç -->
+<div class="screen" id="s-result">
+  <div style="text-align:center;padding:1.5rem 0">
+    <div id="result-emoji" style="font-size:56px;margin-bottom:0.75rem"></div>
+    <h2 id="result-title"></h2>
+    <p id="result-sub" style="margin-top:0.5rem"></p>
+  </div>
+  <div class="card">
+    <div class="stat-row"><span style="color:#666">Toplam puan</span><span id="r-score" style="font-weight:600;color:#0F6E56"></span></div>
+    <div class="stat-row"><span style="color:#666">Doğru cevap</span><span id="r-correct" style="font-weight:500"></span></div>
+    <div class="stat-row"><span style="color:#666">Süre bonusu</span><span id="r-time" style="font-weight:500"></span></div>
+    <div class="stat-row"><span style="color:#666">Sıralama</span><span id="r-rank" style="font-weight:600"></span></div>
+  </div>
+  <button class="btn primary" onclick="showLeaderboard()" style="margin-bottom:8px">Liderlik Tablosunu Gör 🏆</button>
+  <button class="btn secondary" onclick="resetGame()">Tekrar Oyna</button>
+</div>
+
+<!-- SCREEN 4: Leaderboard -->
+<div class="screen" id="s-leaderboard">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem">
+    <button onclick="backToIntro()" style="border:none;background:none;cursor:pointer;font-size:20px;color:#666;padding:0">←</button>
+    <h2>Liderlik Tablosu</h2>
+  </div>
+  <div class="card">
+    <div id="full-leaderboard"></div>
+  </div>
+  <button class="btn primary" onclick="backToIntro()" style="margin-top:0.5rem">Ana Sayfaya Dön</button>
+</div>
+
+</div>
+<script>
+const QUESTIONS=[
+  {cat:"Müşteri Deneyimi",q:"Bir müşteri şikayetini çözerken en önemli ilk adım nedir?",opts:["Savunmaya geçmek","Aktif dinleme ve empati kurmak","Yönetime haber vermek","Standart yanıtı uygulamak"],correct:1,explain:"Müşteri önce anlaşıldığını hissetmelidir. Empati, güveni inşa eder."},
+  {cat:"NPS & Ölçüm",q:"NPS (Net Promoter Score) 0-6 puan verenler hangi gruba girer?",opts:["Promoter","Passive","Detractor","Neutral"],correct:2,explain:"0-6 arası = Detractor (eleştirmen). 7-8 = Passive, 9-10 = Promoter."},
+  {cat:"İletişim",q:"Zor bir müşteriyle konuşurken ses tonunun etkisi nedir?",opts:["%7","Hiç etkisi yok","%38","Tamamen içerik belirler"],correct:2,explain:"Mehrabian araştırmasına göre iletişimin %38'i ses tonu, %55'i beden diliyle aktarılır."},
+  {cat:"Problem Çözme",q:"'First Call Resolution' (FCR) ne anlama gelir?",opts:["İlk aramada sorunu çözmek","Müşteriyi başka birimine yönlendirmek","Çağrıyı kısa tutmak","Çağrıyı kaydetmek"],correct:0,explain:"FCR, müşterinin sorununun tek bir temasta çözülmesidir — müşteri memnuniyetinin en kritik göstergelerinden biri."},
+  {cat:"Empati",q:"Müşteri 'Bu kabul edilemez!' dediğinde ideal yanıt hangisidir?",opts:["'Kurallarımız bu şekilde.'","'Haklısınız, bu durum gerçekten sinir bozucu. Hemen çözelim.'","'Sakin olun lütfen.'","'Bu bizim hatamız değil.'"],correct:1,explain:"Önce duyguyu kabul et, sonra çözüme geç. Bu yaklaşım müşteriyi hemen sakinleştirir."},
+  {cat:"Dijital CX",q:"Omnichannel deneyim ne demektir?",opts:["Sadece dijital kanallar","Telefon ve e-postanın birleşimi","Tüm kanalların entegre ve tutarlı deneyim sunması","Birden fazla ürün sunmak"],correct:2,explain:"Omnichannel; web, mobil, mağaza, telefon — tüm temas noktalarında tutarlı ve kesintisiz deneyim demektir."},
+  {cat:"Müşteri Deneyimi",q:"'Moment of Truth' (Gerçeklik Anı) kavramı neyi ifade eder?",opts:["Şikayetin çözüm anı","Müşterinin markayı değerlendirdiği kritik temas anları","Satış kapandığında","Sözleşme imzalanırken"],correct:1,explain:"Jan Carlzon'un geliştirdiği kavram: müşterinin deneyimi şekillendirecek kritik anlardır."},
+  {cat:"CX Metrikleri",q:"CSAT skoru müşteriye hangi soruyla ölçülür?",opts:["Bizi tavsiye eder misiniz?","Memnuniyetiniz nedir? (1-5)","Sorun ne zaman çözüldü?","Tekrar gelir misiniz?"],correct:1,explain:"CSAT (Customer Satisfaction Score), genellikle 1-5 veya 1-10 arası memnuniyet sorusuyla ölçülür."},
+  {cat:"İletişim",q:"Aktif dinleme teknikleri arasında hangisi yer almaz?",opts:["Özetleme","Soru sorma","Kesmeden dinleme","Cevabı önceden hazırlama"],correct:3,explain:"Cevabı önceden hazırlamak aktif dinlemeyi engeller; bu yapılmamalıdır."},
+  {cat:"CX Kültürü",q:"Bir şirkette güçlü CX kültürünün en temel göstergesi nedir?",opts:["Yüksek reklam bütçesi","Çalışanların müşteri odaklı kararlar alabilmesi","Çok sayıda ürün sunmak","Şikayet sayısının gizlenmesi"],correct:1,explain:"Güçlü CX kültüründe çalışanlar, kılavuza bakmadan müşteri yararına karar verebilir."}
+];
+const COLORS=["#EEEDFE","#E1F5EE","#FAEEDA","#FCEBEB","#E6F1FB"];
+const CCOLORS=["#3C3489","#085041","#633806","#791F1F","#042C53"];
+let state={name:"",q:0,score:0,correct:0,timeBonus:0,timer:null,answered:false};
+let leaderboard=JSON.parse(localStorage.getItem('cx_lb')||'[]');
+function saveLB(){try{localStorage.setItem('cx_lb',JSON.stringify(leaderboard))}catch(e){}}
+function renderLB(el,max){
+  const sorted=[...leaderboard].sort((a,b)=>b.score-a.score).slice(0,max||50);
+  if(!sorted.length){el.innerHTML='<p style="color:#999;font-size:13px;text-align:center;padding:1rem">Henüz kayıt yok. İlk sen ol!</p>';return;}
+  el.innerHTML=sorted.map((r,i)=>{
+    const medals=['🥇','🥈','🥉'];
+    const init=r.name.slice(0,2).toUpperCase();
+    const ci=i%5;
+    return `<div class="leaderboard-row"><div class="rank">${medals[i]||i+1}</div><div class="avatar" style="background:${COLORS[ci]};color:${CCOLORS[ci]}">${init}</div><div class="lb-name">${r.name}</div><div class="lb-score">${r.score}</div><div style="font-size:12px;color:#999">${r.correct}/10</div></div>`;
+  }).join('');
+}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function startGame(){
+  const n=document.getElementById('player-name').value.trim();
+  if(!n){document.getElementById('player-name').focus();return;}
+  state={name:n,q:0,score:0,correct:0,timeBonus:0,timer:null,answered:false};
+  show('s-game');loadQuestion();
+}
+function loadQuestion(){
+  const q=QUESTIONS[state.q];
+  state.answered=false;
+  document.getElementById('q-counter').textContent=`Soru ${state.q+1} / ${QUESTIONS.length}`;
+  document.getElementById('progress').style.width=`${(state.q/QUESTIONS.length)*100}%`;
+  document.getElementById('q-category').innerHTML=`<span class="badge badge-purple">${q.cat}</span>`;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-feedback').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('q-options').innerHTML=q.opts.map((o,i)=>`<button class="btn" onclick="answer(${i})">${o}</button>`).join('');
+  startTimer();
+}
+let timeLeft=20;
+function startTimer(){
+  clearInterval(state.timer);timeLeft=20;
+  document.getElementById('timer').textContent=20;
+  state.timer=setInterval(()=>{timeLeft--;document.getElementById('timer').textContent=timeLeft;if(timeLeft<=0){clearInterval(state.timer);if(!state.answered)timeUp();}},1000);
+}
+function timeUp(){
+  state.answered=true;
+  const q=QUESTIONS[state.q];
+  document.querySelectorAll('#q-options .btn')[q.correct].classList.add('correct');
+  showFeedback(false,q.explain,'Süre doldu! ⏰');
+}
+function answer(i){
+  if(state.answered)return;
+  state.answered=true;clearInterval(state.timer);
+  const q=QUESTIONS[state.q];
+  const btns=document.querySelectorAll('#q-options .btn');
+  const ok=i===q.correct;
+  btns[i].classList.add(ok?'correct':'wrong');
+  if(!ok)btns[q.correct].classList.add('correct');
+  if(ok){const b=Math.round(timeLeft*5);state.score+=100+b;state.timeBonus+=b;state.correct++;showFeedback(true,q.explain,`+100 puan${b?` + ${b} süre bonusu`:''}! 🎉`);}
+  else showFeedback(false,q.explain,'Yanlış cevap ❌');
+  document.getElementById('score-display').textContent=state.score;
+}
+function showFeedback(ok,explain,label){
+  const fb=document.getElementById('q-feedback');
+  fb.style.display='block';
+  fb.innerHTML=`<div class="feedback-box ${ok?'feedback-correct':'feedback-wrong'}"><strong>${label}</strong><br>${explain}</div>`;
+  document.getElementById('next-btn').style.display='block';
+}
+function nextQuestion(){state.q++;if(state.q>=QUESTIONS.length)endGame();else loadQuestion();}
+function endGame(){
+  clearInterval(state.timer);
+  leaderboard.push({name:state.name,score:state.score,correct:state.correct});
+  saveLB();
+  const sorted=[...leaderboard].sort((a,b)=>b.score-a.score);
+  const rank=sorted.findIndex(r=>r.name===state.name&&r.score===state.score)+1;
+  const pct=Math.round((state.correct/QUESTIONS.length)*100);
+  let emoji='😔',title='Daha fazla pratik yap!',sub='Bir dahaki sefere daha iyi olacak.';
+  if(pct>=90){emoji='🏆';title='Mükemmel! CX uzmanısın!';sub='Neredeyse mükemmel bir performans!';}
+  else if(pct>=70){emoji='🎯';title='Harika iş çıkardın!';sub='Bilgin gerçekten etkileyici.';}
+  else if(pct>=50){emoji='👍';title='İyi gidiyorsun!';sub='Biraz daha pratikle uzman olabilirsin.';}
+  document.getElementById('result-emoji').textContent=emoji;
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-sub').textContent=sub;
+  document.getElementById('r-score').textContent=state.score+' puan';
+  document.getElementById('r-correct').textContent=`${state.correct} / ${QUESTIONS.length} (${pct}%)`;
+  document.getElementById('r-time').textContent='+'+state.timeBonus+' puan';
+  document.getElementById('r-rank').textContent=`#${rank}`;
+  show('s-result');
+}
+function showLeaderboard(){renderLB(document.getElementById('full-leaderboard'));show('s-leaderboard');}
+function backToIntro(){renderLB(document.getElementById('intro-leaderboard'),5);show('s-intro');}
+function resetGame(){document.getElementById('player-name').value=state.name;renderLB(document.getElementById('intro-leaderboard'),5);show('s-intro');}
+renderLB(document.getElementById('intro-leaderboard'),5);
+</script>
+</body>
+</html>
