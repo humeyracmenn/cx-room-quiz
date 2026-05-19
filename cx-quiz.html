@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CX Room Quiz</title>
-
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{
@@ -18,189 +17,280 @@ body{
     radial-gradient(ellipse at 15% 15%, #1a6fff 0%, transparent 55%),
     radial-gradient(ellipse at 85% 85%, #002899 0%, transparent 55%);
 }
-.app{width:100%;max-width:420px}
+.app{width:100%;max-width:420px;position:relative}
 .screen{display:none}
 .screen.active{display:block}
-
-.card{background:rgba(255,255,255,0.13);backdrop-filter:blur(10px);
-border:1px solid rgba(255,255,255,0.22);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
-
-h1,h2,h3,p{color:#fff}
-p{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.6}
-
-.btn{width:100%;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,0.28);
-background:rgba(255,255,255,0.1);color:#fff;cursor:pointer;margin-bottom:8px}
-
+.card{background:rgba(255,255,255,0.13);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.22);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
+.badge{display:inline-block;font-size:12px;padding:3px 10px;border-radius:6px;font-weight:600;margin-right:6px;background:rgba(255,255,255,0.2);color:#fff}
+h1{font-size:24px;font-weight:700;color:#fff;margin-bottom:0.5rem}
+h2{font-size:18px;font-weight:700;color:#fff}
+h3{font-size:15px;font-weight:600;color:#fff}
+p{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6}
+.btn{display:block;width:100%;padding:11px 16px;border:1px solid rgba(255,255,255,0.28);border-radius:10px;background:rgba(255,255,255,0.1);color:#fff;font-size:14px;cursor:pointer;text-align:left;margin-bottom:8px;transition:all 0.15s;font-family:inherit}
 .btn:hover{background:rgba(255,255,255,0.22)}
-.btn.primary{background:#fff;color:#0047CC;font-weight:700}
-.btn.correct{background:rgba(74,222,128,0.25)}
-.btn.wrong{background:rgba(248,113,113,0.25)}
-
-.progress-bar{height:5px;background:rgba(255,255,255,0.2);border-radius:3px;margin-bottom:1rem}
-.progress-fill{height:100%;background:#fff}
-
-.timer-num{text-align:center;font-size:42px;color:#fff;font-weight:700}
-
-.badge{font-size:12px;padding:3px 10px;background:rgba(255,255,255,0.2);border-radius:6px}
-
+.btn.correct{border-color:#4ade80;background:rgba(74,222,128,0.22);color:#fff;font-weight:600}
+.btn.wrong{border-color:#f87171;background:rgba(248,113,113,0.22);color:#fff}
+.btn.primary{text-align:center;background:#fff;color:#0047CC;border-color:#fff;font-weight:700}
+.btn.primary:hover{background:rgba(255,255,255,0.92)}
+.btn.secondary{text-align:center;background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3)}
+.progress-bar{height:5px;background:rgba(255,255,255,0.2);border-radius:3px;margin-bottom:1.25rem}
+.progress-fill{height:100%;background:#fff;border-radius:3px;transition:width 0.3s}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.15);font-size:14px;color:rgba(255,255,255,0.8)}
+.stat-row span:last-child{color:#fff}
+.stat-row:last-child{border-bottom:none}
+.name-input{width:100%;padding:11px 12px;border:1px solid rgba(255,255,255,0.3);border-radius:10px;font-size:15px;background:rgba(255,255,255,0.15);color:#fff;margin-bottom:1rem;font-family:inherit;outline:none}
+.name-input::placeholder{color:rgba(255,255,255,0.5)}
+.name-input:focus{border-color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.2)}
+.timer-num{font-size:42px;font-weight:700;color:#fff;text-align:center}
+.leaderboard-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.15);font-size:14px}
+.leaderboard-row:last-child{border-bottom:none}
+.rank{width:24px;font-weight:700;color:rgba(255,255,255,0.7);text-align:center;font-size:13px}
+.lb-name{flex:1;color:#fff;font-weight:500}
+.lb-score{font-weight:700;color:#fff}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:rgba(255,255,255,0.22);color:#fff;border:1px solid rgba(255,255,255,0.35)}
+.feedback-box{padding:12px;border-radius:10px;margin:12px 0;font-size:14px;line-height:1.5;color:#fff}
+.feedback-correct{background:rgba(74,222,128,0.2);border:1px solid rgba(74,222,128,0.4)}
+.feedback-wrong{background:rgba(248,113,113,0.2);border:1px solid rgba(248,113,113,0.4)}
+.timer-wrap{text-align:center;margin:0.75rem 0 1rem}
+.timer-label{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px}
+.already-played{text-align:center;padding:3rem 1rem}
+.already-played .icon{font-size:56px;margin-bottom:1rem}
+.already-played h2{margin-bottom:0.5rem}
+.already-played p{margin-bottom:1.5rem}
+.intro-header{text-align:center;padding:1.5rem 0 1.25rem}
+.trophy-circle{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:32px}
+.dt-logo{text-align:center;padding:0.5rem 0 1.25rem;font-size:13px;color:rgba(255,255,255,0.55);font-weight:500;letter-spacing:0.5px}
 </style>
 </head>
-
 <body>
 <div class="app">
 
-<!-- INTRO -->
-<div class="screen active" id="intro">
-  <div class="card">
-    <h1>CX Room Quiz</h1>
-    <p>Müşteri odaklılık bilginizi test edin.</p>
-
-    <div style="margin-top:10px">
-      <span class="badge">10 Soru</span>
-      <span class="badge">20 sn</span>
-      <span class="badge">Zaman Bonus</span>
+<div class="screen" id="s-played">
+  <div class="already-played">
+    <div class="icon">🔒</div>
+    <h2>Zaten oynadın!</h2>
+    <p style="margin-bottom:1.5rem">Bu quiz'e daha önce katıldın.<br>Her çalışan yalnızca bir kez oynayabilir.</p>
+    <div class="card" style="text-align:left">
+      <div class="stat-row"><span>Adın</span><span id="played-name"></span></div>
+      <div class="stat-row"><span>Puanın</span><span id="played-score"></span></div>
+      <div class="stat-row"><span>Doğru cevap</span><span id="played-correct"></span></div>
+      <div class="stat-row"><span>Sıralaman</span><span id="played-rank"></span></div>
     </div>
-
-    <button class="btn primary" onclick="startGame()">Başla</button>
+    <button class="btn secondary" onclick="showLeaderboard()">Liderlik Tablosunu Gör 🏆</button>
   </div>
 </div>
 
-<!-- GAME -->
-<div class="screen" id="game">
-
+<div class="screen" id="s-intro">
+  <div class="dt-logo">DOĞUŞ TEKNOLOJİ • CX ROOM</div>
+  <div class="intro-header">
+    <div class="trophy-circle">🏆</div>
+    <h1>Müşteri Odaklılık Quiz</h1>
+    <p style="margin-top:0.4rem">Bilgini test et, liderlik tablosuna gir!</p>
+  </div>
   <div class="card">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress"></div>
+    <p style="margin-bottom:0.5rem;color:#fff;font-size:14px;font-weight:600">Adın nedir?</p>
+    <input class="name-input" id="player-name" type="text" placeholder="Adını gir..." maxlength="20">
+    <div style="margin-bottom:0.75rem">
+      <span class="badge">10 soru</span>
+      <span class="badge">20 sn/soru</span>
+      <span class="badge">Süre bonusu</span>
     </div>
+    <p style="font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem">⚠️ Her çalışan yalnızca bir kez oynayabilir.</p>
+    <button class="btn primary" onclick="startGame()">Oyuna Başla →</button>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:0.75rem">🥇 Liderlik Tablosu</h3>
+    <div id="intro-leaderboard"></div>
+    <button class="btn secondary" style="margin-top:8px;font-size:13px" onclick="showLeaderboard()">Tüm tabloyu gör</button>
+  </div>
+</div>
 
+<div class="screen" id="s-game">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+    <span id="q-counter" style="font-size:13px;color:rgba(255,255,255,0.7)"></span>
+    <div>
+      <span style="font-size:13px;color:rgba(255,255,255,0.7)">Puan: </span>
+      <span id="score-display" style="font-weight:700;color:#fff">0</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div class="timer-wrap">
     <div class="timer-num" id="timer">20</div>
-
-    <h3 id="question"></h3>
-    <div id="options"></div>
-
-    <div id="feedback"></div>
-    <button class="btn primary" id="nextBtn" onclick="next()" style="display:none">Sonraki</button>
+    <div class="timer-label">saniye</div>
   </div>
-
-</div>
-
-<!-- RESULT -->
-<div class="screen" id="result">
   <div class="card">
-    <h2 id="resultTitle"></h2>
-    <p id="resultText"></p>
-
-    <p>Skor: <span id="score"></span></p>
-    <p>Doğru: <span id="correct"></span></p>
-
-    <button class="btn primary" onclick="location.reload()">Tekrar Oyna</button>
+    <div id="q-category" style="margin-bottom:8px"></div>
+    <h3 id="q-text" style="font-size:15px;line-height:1.6;margin-bottom:1.25rem"></h3>
+    <div id="q-options"></div>
+    <div id="q-feedback" style="display:none"></div>
+    <button class="btn primary" id="next-btn" style="display:none;margin-top:0.5rem" onclick="nextQuestion()">Sonraki Soru →</button>
   </div>
 </div>
 
+<div class="screen" id="s-result">
+  <div style="text-align:center;padding:1.5rem 0">
+    <div id="result-emoji" style="font-size:56px;margin-bottom:0.75rem"></div>
+    <h2 id="result-title"></h2>
+    <p id="result-sub" style="margin-top:0.5rem"></p>
+  </div>
+  <div class="card">
+    <div class="stat-row"><span>Toplam puan</span><span id="r-score"></span></div>
+    <div class="stat-row"><span>Doğru cevap</span><span id="r-correct"></span></div>
+    <div class="stat-row"><span>Süre bonusu</span><span id="r-time"></span></div>
+    <div class="stat-row"><span>Sıralama</span><span id="r-rank"></span></div>
+  </div>
+  <button class="btn primary" onclick="showLeaderboard()">Liderlik Tablosunu Gör 🏆</button>
 </div>
 
+<div class="screen" id="s-leaderboard">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem">
+    <button onclick="backToStart()" style="border:none;background:none;cursor:pointer;font-size:22px;color:rgba(255,255,255,0.8);padding:0">←</button>
+    <h2>Liderlik Tablosu</h2>
+  </div>
+  <div class="card">
+    <div id="full-leaderboard"></div>
+  </div>
+  <button class="btn secondary" onclick="backToStart()" style="margin-top:0.5rem">Geri Dön</button>
+</div>
+
+</div>
 <script>
 const QUESTIONS=[
- {q:"Müşteri odaklılık nedir?",opts:["Kolay olanı yapmak","Müşteriyi önceliklendirmek","Sadece şirket hedefi","İşten kaçınmak"],a:1},
- {q:"Memnuniyetsiz müşteri?",opts:["Görmezden gel","Anlamaya çalış","Kapat","Reddet"],a:1},
- {q:"Güven nasıl oluşur?",opts:["Yalan","Şeffaflık","Kaçınma","Sessizlik"],a:1},
- {q:"Empati nedir?",opts:["Ezber cevap","Duyguyu anlamak","Hızlı konuşma","Kural"],a:1},
- {q:"Sahiplenme?",opts:["Devretmek","Takip etmek","Bırakmak","Kaçmak"],a:1},
- {q:"Geri bildirim?",opts:["Önemli değil","Sadece olumlu","Sürekli gelişim","Yok say"],a:2},
- {q:"Doğru iletişim?",opts:["Suçlama","Çözüm odaklı","Kaba dil","Sessizlik"],a:1},
- {q:"Karar alma?",opts:["Kişisel rahatlık","Müşteri etkisi","Hız","Şans"],a:1},
- {q:"Güven kaynağı?",opts:["Tutarsızlık","Netlik","Gizleme","Hata"],a:1},
- {q:"Müşteri yaklaşımı?",opts:["Standart cevap","Yardımcı olmak","Reddetmek","İlgisiz"],a:1}
+  {cat:"Müşteri Odaklılık",q:"Müşteri odaklı olmak öncelikle ne anlama gelir?",opts:["Sadece şirket hedeflerine odaklanmak","Her kararda müşterinin ihtiyaçlarını önceliklendirmek","Çalışanlar için en kolay yolu seçmek","Müşteriyle teması minimumda tutmak"],correct:1,explain:"Müşteri odaklılık, kararları şirket içi kolaylığa göre değil, müşterinin bakış açısına göre almaktır."},
+  {cat:"Sorumluluk",q:"Bir müşteri, sorumluluk alanınız dışında bir sorunla size ulaştığında ne yapmalısınız?",opts:["'Bu benim işim değil' demek","Talebi görmezden gelmek","Sahiplenerek doğru çözüme yönlendirmek","Daha sonra tekrar aramasını istemek"],correct:2,explain:"Müşteri odaklılık, görev tanımı fark etmeksizin sorumluluk almayı gerektirir."},
+  {cat:"Empati",q:"Aşağıdaki davranışlardan hangisi müşteri empatisini en iyi yansıtır?",opts:["Zaman kazanmak için müşterinin sözünü kesmek","Dikkatle dinleyip duygusunu anladığını göstermek","Standart ve ezberlenmiş cevaplar vermek","Sadece sistem kurallarına odaklanmak"],correct:1,explain:"Empati, sadece sorunu çözmek değil, müşterinin duygusunu da anlamaktır."},
+  {cat:"Geri Bildirim",q:"Müşteri geri bildirimleri ne zaman dikkate alınmalıdır?",opts:["Sadece olumlu olduğunda","Yalnızca anket dönemlerinde","Sürekli, gelişim fırsatı olarak","Sadece yöneticiler tarafından"],correct:2,explain:"Geri bildirimler, sürekli iyileştirme için önemli bir kaynaktır."},
+  {cat:"Memnuniyetsiz Müşteri",q:"Memnuniyetsiz bir müşteriye verilebilecek en doğru yaklaşım hangisidir?",opts:["Önce şirket prosedürlerini anlatmak","Dış etkenleri suçlamak","Anlayış göstermek ve çözüm sunmak","Görüşmeyi hızlıca sonlandırmak"],correct:2,explain:"Müşteriler önce anlaşıldıklarını hissetmek ister."},
+  {cat:"Güven",q:"Uzun vadeli müşteri güvenini güçlendiren davranış hangisidir?",opts:["Tutulamayacak sözler vermek","Açık, net ve şeffaf iletişim kurmak","Zor konuşmalardan kaçınmak","Müşteriyi farklı kişilere yönlendirmek"],correct:1,explain:"Güven, şeffaflık ve dürüstlükle oluşur."},
+  {cat:"Karar Alma",q:"Günlük iş kararlarında hangisi rehber olmalıdır?",opts:["Kişisel konfor","Sadece hız","Kararın müşteri üzerindeki etkisi","Hiyerarşik yapı"],correct:2,explain:"Her kararın müşteri deneyimine etkisi düşünülmelidir."},
+  {cat:"İletişim",q:"Bir müşteri hata yaptığında nasıl davranılmalıdır?",opts:["Hatasını yüzüne vurmak","Yargılayıcı bir dil kullanmak","Saygılı şekilde çözüm odaklı olmak","Talebi reddetmek"],correct:2,explain:"Müşteri odaklı yaklaşım suçlayıcı değil, çözüm odaklıdır."},
+  {cat:"Sahiplenme",q:"Müşteri deneyiminde 'sahiplenmek' ne anlama gelir?",opts:["Sadece kendi görevini tamamlamak","Sorunu hemen başkasına devretmek","Sorun tamamen çözülene kadar takip etmek","Müşterinin tekrar aramasını beklemek"],correct:2,explain:"Sahiplenme, çözüm tamamlanana kadar sorumluluk almaktır."},
+  {cat:"Müşteri Odaklı Dil",q:"Aşağıdaki ifadelerden hangisi müşteri odaklı bir bakış açısını yansıtır?",opts:["'Bu bizim prosedürümüz.'","'Yapabileceğimiz bir şey yok.'","'Size nasıl yardımcı olabileceğime bakalım.'","'Bunu bilmeniz gerekirdi.'"],correct:2,explain:"Müşteri odaklı dil, sınırları değil çözümleri vurgular."}
 ];
 
-let i=0,score=0,correct=0,time=20,timer;
+let state={name:"",q:0,score:0,correct:0,timeBonus:0,timer:null,answered:false};
+let leaderboard=JSON.parse(localStorage.getItem('cx_lb_v3')||'[]');
+let played=JSON.parse(localStorage.getItem('cx_played_v3')||'null');
+
+function saveLB(){try{localStorage.setItem('cx_lb_v3',JSON.stringify(leaderboard))}catch(e){}}
+
+function renderLB(el,max){
+  const sorted=[...leaderboard].sort((a,b)=>b.score-a.score).slice(0,max||50);
+  if(!sorted.length){el.innerHTML='<p style="color:rgba(255,255,255,0.5);font-size:13px;text-align:center;padding:1rem">Henüz kayıt yok. İlk sen ol!</p>';return;}
+  el.innerHTML=sorted.map((r,i)=>{
+    const medals=['🥇','🥈','🥉'];
+    const init=r.name.slice(0,2).toUpperCase();
+    const isMe=played&&r.name===played.name&&r.score===played.score;
+    return `<div class="leaderboard-row" style="${isMe?'background:rgba(255,255,255,0.12);border-radius:8px;padding:10px 8px;':''}">
+      <div class="rank">${medals[i]||i+1}</div>
+      <div class="avatar">${init}</div>
+      <div class="lb-name">${r.name}${isMe?' 👈':''}</div>
+      <div class="lb-score">${r.score}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.5)">${r.correct}/10</div>
+    </div>`;
+  }).join('');
+}
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function getRank(name,score){const s=[...leaderboard].sort((a,b)=>b.score-a.score);return s.findIndex(r=>r.name===name&&r.score===score)+1;}
+
+window.onload=function(){
+  if(played){
+    const rank=getRank(played.name,played.score);
+    document.getElementById('played-name').textContent=played.name;
+    document.getElementById('played-score').textContent=played.score+' puan';
+    document.getElementById('played-correct').textContent=played.correct+' / 10';
+    document.getElementById('played-rank').textContent='#'+rank;
+    show('s-played');
+  } else {
+    renderLB(document.getElementById('intro-leaderboard'),3);
+    show('s-intro');
+  }
+};
 
 function startGame(){
-  show("game");
-  load();
+  const n=document.getElementById('player-name').value.trim();
+  if(!n){document.getElementById('player-name').focus();return;}
+  state={name:n,q:0,score:0,correct:0,timeBonus:0,timer:null,answered:false};
+  show('s-game');loadQuestion();
 }
 
-function load(){
-  let q=QUESTIONS[i];
-  document.getElementById("question").innerText=q.q;
-
-  document.getElementById("options").innerHTML=
-    q.opts.map((o,idx)=>
-      `<button class="btn" onclick="answer(${idx})">${o}</button>`
-    ).join("");
-
-  document.getElementById("feedback").innerHTML="";
-  document.getElementById("nextBtn").style.display="none";
-
-  document.getElementById("progress").style.width=(i/QUESTIONS.length)*100+"%";
-
-  time=20;
-  document.getElementById("timer").innerText=time;
-
-  clearInterval(timer);
-  timer=setInterval(()=>{
-    time--;
-    document.getElementById("timer").innerText=time;
-    if(time<=0){
-      clearInterval(timer);
-      reveal(false);
-    }
-  },1000);
+function loadQuestion(){
+  const q=QUESTIONS[state.q];
+  state.answered=false;
+  document.getElementById('q-counter').textContent=`Soru ${state.q+1} / ${QUESTIONS.length}`;
+  document.getElementById('progress').style.width=`${(state.q/QUESTIONS.length)*100}%`;
+  document.getElementById('q-category').innerHTML=`<span class="badge">${q.cat}</span>`;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-feedback').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('q-options').innerHTML=q.opts.map((o,i)=>`<button class="btn" onclick="answer(${i})">${o}</button>`).join('');
+  startTimer();
 }
 
-function answer(a){
-  clearInterval(timer);
-  let q=QUESTIONS[i];
-  let btns=document.querySelectorAll(".btn");
-
-  if(a===q.a){
-    score+=100;
-    correct++;
-    btns[a].classList.add("correct");
-    reveal(true);
-  }else{
-    btns[a].classList.add("wrong");
-    btns[q.a].classList.add("correct");
-    reveal(false);
-  }
+let timeLeft=20;
+function startTimer(){
+  clearInterval(state.timer);timeLeft=20;
+  document.getElementById('timer').textContent=20;
+  state.timer=setInterval(()=>{timeLeft--;document.getElementById('timer').textContent=timeLeft;if(timeLeft<=0){clearInterval(state.timer);if(!state.answered)timeUp();}},1000);
 }
 
-function reveal(ok){
-  document.getElementById("feedback").innerHTML=
-    ok?"✔ Doğru!":"✖ Yanlış!";
-  document.getElementById("nextBtn").style.display="block";
+function timeUp(){
+  state.answered=true;
+  const q=QUESTIONS[state.q];
+  document.querySelectorAll('#q-options .btn')[q.correct].classList.add('correct');
+  showFeedback(false,q.explain,'Süre doldu! ⏰');
 }
 
-function next(){
-  i++;
-  if(i>=QUESTIONS.length){
-    end();
-  }else{
-    load();
-  }
+function answer(i){
+  if(state.answered)return;
+  state.answered=true;clearInterval(state.timer);
+  const q=QUESTIONS[state.q];
+  const btns=document.querySelectorAll('#q-options .btn');
+  const ok=i===q.correct;
+  btns[i].classList.add(ok?'correct':'wrong');
+  if(!ok)btns[q.correct].classList.add('correct');
+  if(ok){const b=Math.round(timeLeft*5);state.score+=100+b;state.timeBonus+=b;state.correct++;showFeedback(true,q.explain,`+100 puan${b?` + ${b} süre bonusu`:''}! 🎉`);}
+  else showFeedback(false,q.explain,'Yanlış cevap ❌');
+  document.getElementById('score-display').textContent=state.score;
 }
 
-function end(){
-  show("result");
-  document.getElementById("score").innerText=score;
-  document.getElementById("correct").innerText=correct+"/10";
-
-  if(correct>=8){
-    document.getElementById("resultTitle").innerText="Mükemmel!";
-  }else if(correct>=5){
-    document.getElementById("resultTitle").innerText="İyi!";
-  }else{
-    document.getElementById("resultTitle").innerText="Gelişmeli";
-  }
-
-  document.getElementById("resultText").innerText="CX bilgini tamamladın.";
+function showFeedback(ok,explain,label){
+  const fb=document.getElementById('q-feedback');
+  fb.style.display='block';
+  fb.innerHTML=`<div class="feedback-box ${ok?'feedback-correct':'feedback-wrong'}"><strong>${label}</strong><br>${explain}</div>`;
+  document.getElementById('next-btn').style.display='block';
 }
 
-function show(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+function nextQuestion(){state.q++;if(state.q>=QUESTIONS.length)endGame();else loadQuestion();}
+
+function endGame(){
+  clearInterval(state.timer);
+  const record={name:state.name,score:state.score,correct:state.correct};
+  leaderboard.push(record);
+  saveLB();
+  try{localStorage.setItem('cx_played_v3',JSON.stringify(record));played=record;}catch(e){}
+  const rank=getRank(state.name,state.score);
+  const pct=Math.round((state.correct/QUESTIONS.length)*100);
+  let emoji='😔',title='Daha fazla pratik yap!',sub='Tebrikler, katıldığın için teşekkürler!';
+  if(pct>=90){emoji='🏆';title='Mükemmel! CX uzmanısın!';sub='Neredeyse mükemmel bir performans!';}
+  else if(pct>=70){emoji='🎯';title='Harika iş çıkardın!';sub='Bilgin gerçekten etkileyici.';}
+  else if(pct>=50){emoji='👍';title='İyi gidiyorsun!';sub='Biraz daha pratikle uzman olabilirsin.';}
+  document.getElementById('result-emoji').textContent=emoji;
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-sub').textContent=sub;
+  document.getElementById('r-score').textContent=state.score+' puan';
+  document.getElementById('r-correct').textContent=`${state.correct} / ${QUESTIONS.length} (${pct}%)`;
+  document.getElementById('r-time').textContent='+'+state.timeBonus+' puan';
+  document.getElementById('r-rank').textContent='#'+rank;
+  show('s-result');
+}
+
+function showLeaderboard(){renderLB(document.getElementById('full-leaderboard'),3);show('s-leaderboard');}
+function backToStart(){
+  if(played){show('s-played');}
+  else{renderLB(document.getElementById('intro-leaderboard'),3);show('s-intro');}
 }
 </script>
-
 </body>
 </html>
