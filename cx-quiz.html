@@ -60,6 +60,7 @@ p{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6}
 .intro-header{text-align:center;padding:1.5rem 0 1.25rem}
 .trophy-circle{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:32px}
 .dt-logo{text-align:center;padding:0.5rem 0 1.25rem;font-size:13px;color:rgba(255,255,255,0.55);font-weight:500;letter-spacing:0.5px}
+.loading{text-align:center;padding:1rem;color:rgba(255,255,255,0.6);font-size:13px}
 </style>
 </head>
 <body>
@@ -100,7 +101,7 @@ p{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6}
   </div>
   <div class="card">
     <h3 style="margin-bottom:0.75rem">🥇 Liderlik Tablosu</h3>
-    <div id="intro-leaderboard"></div>
+    <div id="intro-leaderboard"><div class="loading">Yükleniyor...</div></div>
     <button class="btn secondary" style="margin-top:8px;font-size:13px" onclick="showLeaderboard()">Tüm tabloyu gör</button>
   </div>
 </div>
@@ -148,13 +149,15 @@ p{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6}
     <h2>Liderlik Tablosu</h2>
   </div>
   <div class="card">
-    <div id="full-leaderboard"></div>
+    <div id="full-leaderboard"><div class="loading">Yükleniyor...</div></div>
   </div>
   <button class="btn secondary" onclick="backToStart()" style="margin-top:0.5rem">Geri Dön</button>
 </div>
 
 </div>
 <script>
+const API = 'https://script.google.com/macros/s/AKfycbxPuoafuseFhacRyJgDrvNBhwtUFwkMBkyZqIhafzXsuBRLQzxZ0vARl0jJTwJrUhAZ/exec';
+
 const QUESTIONS=[
   {cat:"Müşteri Odaklılık",q:"Müşteri odaklı olmak öncelikle ne anlama gelir?",opts:["Sadece şirket hedeflerine odaklanmak","Her kararda müşterinin ihtiyaçlarını önceliklendirmek","Çalışanlar için en kolay yolu seçmek","Müşteriyle teması minimumda tutmak"],correct:1,explain:"Müşteri odaklılık, kararları şirket içi kolaylığa göre değil, müşterinin bakış açısına göre almaktır."},
   {cat:"Sorumluluk",q:"Bir müşteri, sorumluluk alanınız dışında bir sorunla size ulaştığında ne yapmalısınız?",opts:["'Bu benim işim değil' demek","Talebi görmezden gelmek","Sahiplenerek doğru çözüme yönlendirmek","Daha sonra tekrar aramasını istemek"],correct:2,explain:"Müşteri odaklılık, görev tanımı fark etmeksizin sorumluluk almayı gerektirir."},
@@ -169,18 +172,50 @@ const QUESTIONS=[
 ];
 
 let state={name:"",q:0,score:0,correct:0,timeBonus:0,timer:null,answered:false};
-let leaderboard=JSON.parse(localStorage.getItem('cx_lb_v3')||'[]');
-let played=JSON.parse(localStorage.getItem('cx_played_v3')||'null');
+let played=JSON.parse(localStorage.getItem('cx_played_v4')||'null');
+let globalLB=[];
 
-function saveLB(){try{localStorage.setItem('cx_lb_v3',JSON.stringify(leaderboard))}catch(e){}}
+function fetchLB(){
+  return new Promise(resolve=>{
+    const cb='cb'+Date.now();
+    window[cb]=function(data){
+      try{globalLB=data.filter(d=>d.name&&d.score).sort((a,b)=>b.score-a.score);}catch(e){globalLB=[];}
+      delete window[cb];
+      const s=document.getElementById('jsonp-s');if(s)s.remove();
+      resolve();
+    };
+    const s=document.createElement('script');
+    s.id='jsonp-s';
+    s.src=API+'?callback='+cb;
+    s.onerror=()=>{globalLB=[];resolve();};
+    document.body.appendChild(s);
+    setTimeout(()=>{if(window[cb]){delete window[cb];globalLB=[];resolve();}},5000);
+  });
+}
+
+async function saveToSheets(record){
+  try{
+    await fetch(API,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(record)
+    });
+  }catch(e){}
+}
+
+function getRank(name,score){
+  const idx=globalLB.findIndex(r=>r.name===name&&Number(r.score)===score);
+  return idx>=0?idx+1:globalLB.length+1;
+}
 
 function renderLB(el,max){
-  const sorted=[...leaderboard].sort((a,b)=>b.score-a.score).slice(0,max||50);
-  if(!sorted.length){el.innerHTML='<p style="color:rgba(255,255,255,0.5);font-size:13px;text-align:center;padding:1rem">Henüz kayıt yok. İlk sen ol!</p>';return;}
-  el.innerHTML=sorted.map((r,i)=>{
-    const medals=['🥇','🥈','🥉'];
-    const init=r.name.slice(0,2).toUpperCase();
-    const isMe=played&&r.name===played.name&&r.score===played.score;
+  const rows=globalLB.slice(0,max||50);
+  if(!rows.length){el.innerHTML='<p style="color:rgba(255,255,255,0.5);font-size:13px;text-align:center;padding:1rem">Henüz kayıt yok. İlk sen ol!</p>';return;}
+  const medals=['🥇','🥈','🥉'];
+  el.innerHTML=rows.map((r,i)=>{
+    const init=String(r.name).slice(0,2).toUpperCase();
+    const isMe=played&&r.name===played.name&&Number(r.score)===played.score;
     return `<div class="leaderboard-row" style="${isMe?'background:rgba(255,255,255,0.12);border-radius:8px;padding:10px 8px;':''}">
       <div class="rank">${medals[i]||i+1}</div>
       <div class="avatar">${init}</div>
@@ -192,9 +227,9 @@ function renderLB(el,max){
 }
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function getRank(name,score){const s=[...leaderboard].sort((a,b)=>b.score-a.score);return s.findIndex(r=>r.name===name&&r.score===score)+1;}
 
-window.onload=function(){
+window.onload=async function(){
+  await fetchLB();
   if(played){
     const rank=getRank(played.name,played.score);
     document.getElementById('played-name').textContent=played.name;
@@ -264,12 +299,12 @@ function showFeedback(ok,explain,label){
 
 function nextQuestion(){state.q++;if(state.q>=QUESTIONS.length)endGame();else loadQuestion();}
 
-function endGame(){
+async function endGame(){
   clearInterval(state.timer);
   const record={name:state.name,score:state.score,correct:state.correct};
-  leaderboard.push(record);
-  saveLB();
-  try{localStorage.setItem('cx_played_v3',JSON.stringify(record));played=record;}catch(e){}
+  await saveToSheets(record);
+  await fetchLB();
+  try{localStorage.setItem('cx_played_v4',JSON.stringify(record));played=record;}catch(e){}
   const rank=getRank(state.name,state.score);
   const pct=Math.round((state.correct/QUESTIONS.length)*100);
   let emoji='😔',title='Daha fazla pratik yap!',sub='Tebrikler, katıldığın için teşekkürler!';
@@ -286,7 +321,13 @@ function endGame(){
   show('s-result');
 }
 
-function showLeaderboard(){renderLB(document.getElementById('full-leaderboard'),3);show('s-leaderboard');}
+async function showLeaderboard(){
+  document.getElementById('full-leaderboard').innerHTML='<div class="loading">Yükleniyor...</div>';
+  show('s-leaderboard');
+  await fetchLB();
+  renderLB(document.getElementById('full-leaderboard'),3);
+}
+
 function backToStart(){
   if(played){show('s-played');}
   else{renderLB(document.getElementById('intro-leaderboard'),3);show('s-intro');}
