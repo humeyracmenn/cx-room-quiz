@@ -6,112 +6,103 @@
 <title>CX Room Quiz</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  padding:1rem 1rem 2rem;
-  background:#0047CC;
-  background-image:
-    radial-gradient(ellipse at 15% 15%, #1a6fff 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 85%, #002899 0%, transparent 55%);
-}
-.app{width:100%;max-width:420px;position:relative}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh;display:flex;justify-content:center;padding:1rem}
+.app{width:100%;max-width:420px}
 .screen{display:none}
 .screen.active{display:block}
-.card{background:rgba(255,255,255,0.13);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.22);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
-.badge{display:inline-block;font-size:12px;padding:3px 10px;border-radius:6px;font-weight:600;margin-right:6px;background:rgba(255,255,255,0.2);color:#fff}
-h1{font-size:24px;font-weight:700;color:#fff;margin-bottom:0.5rem}
-h2{font-size:18px;font-weight:700;color:#fff}
-h3{font-size:15px;font-weight:600;color:#fff}
-p{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6}
-.btn{display:block;width:100%;padding:11px 16px;border:1px solid rgba(255,255,255,0.28);border-radius:10px;background:rgba(255,255,255,0.1);color:#fff;font-size:14px;cursor:pointer;text-align:left;margin-bottom:8px;transition:all 0.15s;font-family:inherit}
-.btn:hover{background:rgba(255,255,255,0.22)}
-.btn.correct{border-color:#4ade80;background:rgba(74,222,128,0.22);color:#fff;font-weight:600}
-.btn.wrong{border-color:#f87171;background:rgba(248,113,113,0.22);color:#fff}
-.btn.primary{text-align:center;background:#fff;color:#0047CC;border-color:#fff;font-weight:700}
-.btn.primary:hover{background:rgba(255,255,255,0.92)}
-.btn.secondary{text-align:center;background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3)}
-.progress-bar{height:5px;background:rgba(255,255,255,0.2);border-radius:3px;margin-bottom:1.25rem}
-.progress-fill{height:100%;background:#fff;border-radius:3px;transition:width 0.3s}
-.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.15);font-size:14px;color:rgba(255,255,255,0.8)}
-.stat-row span:last-child{color:#fff}
+.card{background:#fff;border:1px solid #e8e8e4;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.badge{display:inline-block;font-size:12px;padding:3px 10px;border-radius:6px;font-weight:500;margin-right:6px}
+.badge-purple{background:#EEEDFE;color:#3C3489}
+.badge-teal{background:#E1F5EE;color:#0F6E56}
+.badge-amber{background:#FAEEDA;color:#633806}
+h1{font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:0.5rem}
+h2{font-size:18px;font-weight:600;color:#1a1a1a}
+h3{font-size:15px;font-weight:600;color:#1a1a1a}
+p{color:#666;font-size:14px;line-height:1.6}
+.btn{display:block;width:100%;padding:11px 16px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-size:14px;cursor:pointer;text-align:left;margin-bottom:8px;transition:background 0.15s;font-family:inherit}
+.btn:hover{background:#f5f5f0}
+.btn.correct{border-color:#0F6E56;background:#E1F5EE;color:#085041;font-weight:500}
+.btn.wrong{border-color:#A32D2D;background:#FCEBEB;color:#791F1F}
+.btn.primary{text-align:center;background:#1a1a1a;color:#fff;border-color:#1a1a1a;font-weight:500}
+.btn.primary:hover{background:#333}
+.btn.secondary{text-align:center}
+.progress-bar{height:4px;background:#e8e8e4;border-radius:2px;margin-bottom:1.25rem}
+.progress-fill{height:100%;background:#1D9E75;border-radius:2px;transition:width 0.3s}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0ec;font-size:14px}
 .stat-row:last-child{border-bottom:none}
-.name-input{width:100%;padding:11px 12px;border:1px solid rgba(255,255,255,0.3);border-radius:10px;font-size:15px;background:rgba(255,255,255,0.15);color:#fff;margin-bottom:1rem;font-family:inherit;outline:none}
-.name-input::placeholder{color:rgba(255,255,255,0.5)}
-.name-input:focus{border-color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.2)}
-.timer-num{font-size:42px;font-weight:700;color:#fff;text-align:center}
-.leaderboard-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.15);font-size:14px}
+.name-input{width:100%;padding:11px 12px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#fff;color:#1a1a1a;margin-bottom:1rem;font-family:inherit;outline:none}
+.name-input:focus{border-color:#666}
+.timer-num{font-size:32px;font-weight:700;color:#1a1a1a;text-align:center}
+.leaderboard-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f0f0ec;font-size:14px}
 .leaderboard-row:last-child{border-bottom:none}
-.rank{width:24px;font-weight:700;color:rgba(255,255,255,0.7);text-align:center;font-size:13px}
-.lb-name{flex:1;color:#fff;font-weight:500}
-.lb-score{font-weight:700;color:#fff}
-.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:rgba(255,255,255,0.22);color:#fff;border:1px solid rgba(255,255,255,0.35)}
-.feedback-box{padding:12px;border-radius:10px;margin:12px 0;font-size:14px;line-height:1.5;color:#fff}
-.feedback-correct{background:rgba(74,222,128,0.2);border:1px solid rgba(74,222,128,0.4)}
-.feedback-wrong{background:rgba(248,113,113,0.2);border:1px solid rgba(248,113,113,0.4)}
+.rank{width:24px;font-weight:600;color:#666;text-align:center;font-size:13px}
+.lb-name{flex:1;color:#1a1a1a;font-weight:500}
+.lb-score{font-weight:600;color:#0F6E56}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.feedback-box{padding:12px;border-radius:8px;margin:12px 0;font-size:14px;line-height:1.5}
+.feedback-correct{background:#E1F5EE;color:#085041}
+.feedback-wrong{background:#FCEBEB;color:#791F1F}
 .timer-wrap{text-align:center;margin:0.75rem 0 1rem}
-.timer-label{font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px}
+.timer-label{font-size:11px;color:#999;margin-top:2px}
 .already-played{text-align:center;padding:3rem 1rem}
 .already-played .icon{font-size:56px;margin-bottom:1rem}
 .already-played h2{margin-bottom:0.5rem}
 .already-played p{margin-bottom:1.5rem}
-.intro-header{text-align:center;padding:1.5rem 0 1.25rem}
-.trophy-circle{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.18);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:32px}
-.dt-logo{text-align:center;padding:0.5rem 0 1.25rem;font-size:13px;color:rgba(255,255,255,0.55);font-weight:500;letter-spacing:0.5px}
-.loading{text-align:center;padding:1rem;color:rgba(255,255,255,0.6);font-size:13px}
+.score-highlight{font-size:32px;font-weight:700;color:#0F6E56;margin:0.5rem 0}
 </style>
 </head>
 <body>
 <div class="app">
 
+<!-- SCREEN: Daha önce oynadı -->
 <div class="screen" id="s-played">
   <div class="already-played">
     <div class="icon">🔒</div>
     <h2>Zaten oynadın!</h2>
-    <p style="margin-bottom:1.5rem">Bu quiz'e daha önce katıldın.<br>Her çalışan yalnızca bir kez oynayabilir.</p>
+    <p>Bu quiz'e daha önce katıldın. Her çalışan yalnızca bir kez oynayabilir.</p>
     <div class="card" style="text-align:left">
-      <div class="stat-row"><span>Adın</span><span id="played-name"></span></div>
-      <div class="stat-row"><span>Puanın</span><span id="played-score"></span></div>
-      <div class="stat-row"><span>Doğru cevap</span><span id="played-correct"></span></div>
-      <div class="stat-row"><span>Sıralaman</span><span id="played-rank"></span></div>
+      <div class="stat-row"><span style="color:#666">Adın</span><span id="played-name" style="font-weight:600"></span></div>
+      <div class="stat-row"><span style="color:#666">Puanın</span><span id="played-score" style="font-weight:600;color:#0F6E56"></span></div>
+      <div class="stat-row"><span style="color:#666">Doğru cevap</span><span id="played-correct" style="font-weight:500"></span></div>
+      <div class="stat-row"><span style="color:#666">Sıralaman</span><span id="played-rank" style="font-weight:600"></span></div>
     </div>
+    <button class="btn primary" onclick="playAgain()">Yeniden Oyna (Başka İsimle) ↺</button>
     <button class="btn secondary" onclick="showLeaderboard()">Liderlik Tablosunu Gör 🏆</button>
   </div>
 </div>
 
+<!-- SCREEN: Giriş -->
 <div class="screen" id="s-intro">
-  <div class="dt-logo">DOĞUŞ TEKNOLOJİ • CX ROOM</div>
-  <div class="intro-header">
-    <div class="trophy-circle">🏆</div>
-    <h1>Müşteri Odaklılık Quiz</h1>
-    <p style="margin-top:0.4rem">Bilgini test et, liderlik tablosuna gir!</p>
+  <div style="text-align:center;padding:2rem 0 1.5rem">
+    <div style="width:72px;height:72px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:32px">🏆</div>
+    <h1>CX Room Quiz</h1>
+    <p style="margin-top:0.5rem">Müşteri odaklılık bilgini test et,<br>liderlik tablosuna gir!</p>
   </div>
   <div class="card">
-    <p style="margin-bottom:0.5rem;color:#fff;font-size:14px;font-weight:600">Adın nedir?</p>
+    <p style="margin-bottom:0.5rem;color:#1a1a1a;font-size:14px;font-weight:500">Adın nedir?</p>
     <input class="name-input" id="player-name" type="text" placeholder="Adını gir..." maxlength="20">
     <div style="margin-bottom:0.75rem">
-      <span class="badge">10 soru</span>
-      <span class="badge">20 sn/soru</span>
-      <span class="badge">Süre bonusu</span>
+      <span class="badge badge-purple">10 soru</span>
+      <span class="badge badge-teal">20 sn/soru</span>
+      <span class="badge badge-amber">Süre bonusu</span>
     </div>
-    <p style="font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem">⚠️ Her çalışan yalnızca bir kez oynayabilir.</p>
+    <p style="font-size:12px;color:#999;margin-bottom:1rem">⚠️ Her çalışan yalnızca bir kez oynayabilir.</p>
     <button class="btn primary" onclick="startGame()">Oyuna Başla →</button>
   </div>
   <div class="card">
     <h3 style="margin-bottom:0.75rem">🥇 Liderlik Tablosu</h3>
-    <div id="intro-leaderboard"><div class="loading">Yükleniyor...</div></div>
+    <div id="intro-leaderboard"></div>
     <button class="btn secondary" style="margin-top:8px;font-size:13px" onclick="showLeaderboard()">Tüm tabloyu gör</button>
   </div>
 </div>
 
+<!-- SCREEN: Oyun -->
 <div class="screen" id="s-game">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
-    <span id="q-counter" style="font-size:13px;color:rgba(255,255,255,0.7)"></span>
+    <span id="q-counter" style="font-size:13px;color:#666"></span>
     <div>
-      <span style="font-size:13px;color:rgba(255,255,255,0.7)">Puan: </span>
-      <span id="score-display" style="font-weight:700;color:#fff">0</span>
+      <span style="font-size:13px;color:#666">Puan: </span>
+      <span id="score-display" style="font-weight:600;color:#0F6E56">0</span>
     </div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
@@ -128,6 +119,7 @@ p{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6}
   </div>
 </div>
 
+<!-- SCREEN: Sonuç -->
 <div class="screen" id="s-result">
   <div style="text-align:center;padding:1.5rem 0">
     <div id="result-emoji" style="font-size:56px;margin-bottom:0.75rem"></div>
@@ -135,29 +127,28 @@ p{color:rgba(255,255,255,0.8);font-size:14px;line-height:1.6}
     <p id="result-sub" style="margin-top:0.5rem"></p>
   </div>
   <div class="card">
-    <div class="stat-row"><span>Toplam puan</span><span id="r-score"></span></div>
-    <div class="stat-row"><span>Doğru cevap</span><span id="r-correct"></span></div>
-    <div class="stat-row"><span>Süre bonusu</span><span id="r-time"></span></div>
-    <div class="stat-row"><span>Sıralama</span><span id="r-rank"></span></div>
+    <div class="stat-row"><span style="color:#666">Toplam puan</span><span id="r-score" style="font-weight:600;color:#0F6E56"></span></div>
+    <div class="stat-row"><span style="color:#666">Doğru cevap</span><span id="r-correct" style="font-weight:500"></span></div>
+    <div class="stat-row"><span style="color:#666">Süre bonusu</span><span id="r-time" style="font-weight:500"></span></div>
+    <div class="stat-row"><span style="color:#666">Sıralama</span><span id="r-rank" style="font-weight:600"></span></div>
   </div>
   <button class="btn primary" onclick="showLeaderboard()">Liderlik Tablosunu Gör 🏆</button>
 </div>
 
+<!-- SCREEN: Leaderboard -->
 <div class="screen" id="s-leaderboard">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem">
-    <button onclick="backToStart()" style="border:none;background:none;cursor:pointer;font-size:22px;color:rgba(255,255,255,0.8);padding:0">←</button>
+    <button onclick="backToStart()" style="border:none;background:none;cursor:pointer;font-size:20px;color:#666;padding:0">←</button>
     <h2>Liderlik Tablosu</h2>
   </div>
   <div class="card">
-    <div id="full-leaderboard"><div class="loading">Yükleniyor...</div></div>
+    <div id="full-leaderboard"></div>
   </div>
-  <button class="btn secondary" onclick="backToStart()" style="margin-top:0.5rem">Geri Dön</button>
+  <button class="btn primary" onclick="backToStart()" style="margin-top:0.5rem">Geri Dön</button>
 </div>
 
 </div>
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbxPuoafuseFhacRyJgDrvNBhwtUFwkMBkyZqIhafzXsuBRLQzxZ0vARl0jJTwJrUhAZ/exec';
-
 const QUESTIONS=[
   {cat:"Müşteri Odaklılık",q:"Müşteri odaklı olmak öncelikle ne anlama gelir?",opts:["Sadece şirket hedeflerine odaklanmak","Her kararda müşterinin ihtiyaçlarını önceliklendirmek","Çalışanlar için en kolay yolu seçmek","Müşteriyle teması minimumda tutmak"],correct:1,explain:"Müşteri odaklılık, kararları şirket içi kolaylığa göre değil, müşterinin bakış açısına göre almaktır."},
   {cat:"Sorumluluk",q:"Bir müşteri, sorumluluk alanınız dışında bir sorunla size ulaştığında ne yapmalısınız?",opts:["'Bu benim işim değil' demek","Talebi görmezden gelmek","Sahiplenerek doğru çözüme yönlendirmek","Daha sonra tekrar aramasını istemek"],correct:2,explain:"Müşteri odaklılık, görev tanımı fark etmeksizin sorumluluk almayı gerektirir."},
@@ -171,74 +162,75 @@ const QUESTIONS=[
   {cat:"Müşteri Odaklı Dil",q:"Aşağıdaki ifadelerden hangisi müşteri odaklı bir bakış açısını yansıtır?",opts:["'Bu bizim prosedürümüz.'","'Yapabileceğimiz bir şey yok.'","'Size nasıl yardımcı olabileceğime bakalım.'","'Bunu bilmeniz gerekirdi.'"],correct:2,explain:"Müşteri odaklı dil, sınırları değil çözümleri vurgular."}
 ];
 
+const COLORS=["#EEEDFE","#E1F5EE","#FAEEDA","#FCEBEB","#E6F1FB"];
+const CCOLORS=["#3C3489","#085041","#633806","#791F1F","#042C53"];
 let state={name:"",q:0,score:0,correct:0,timeBonus:0,timer:null,answered:false};
-let played=JSON.parse(localStorage.getItem('cx_played_v4')||'null');
-let globalLB=[];
+let leaderboard=JSON.parse(localStorage.getItem('cx_lb_v2')||'[]');
+let played = JSON.parse(localStorage.getItem('cx_played')||'null');
 
-function fetchLB(){
-  return new Promise(resolve=>{
-    const cb='cb'+Date.now();
-    window[cb]=function(data){
-      try{globalLB=data.filter(d=>d.name&&d.score).sort((a,b)=>b.score-a.score);}catch(e){globalLB=[];}
-      delete window[cb];
-      const s=document.getElementById('jsonp-s');if(s)s.remove();
-      resolve();
-    };
-    const s=document.createElement('script');
-    s.id='jsonp-s';
-    s.src=API+'?callback='+cb;
-    s.onerror=()=>{globalLB=[];resolve();};
-    document.body.appendChild(s);
-    setTimeout(()=>{if(window[cb]){delete window[cb];globalLB=[];resolve();}},5000);
-  });
+function normalizeName(name){
+  return (name||'')
+    .trim()
+    .replace(/\s+/g,' ')
+    .toLocaleLowerCase('tr-TR');
 }
 
-async function saveToSheets(record){
-  try{
-    await fetch(API,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify(record)
-    });
-  }catch(e){}
+function dedupeLeaderboard(list){
+  const bestByName = new Map();
+  for(const r of Array.isArray(list)?list:[]){
+    if(!r || typeof r.name !== 'string') continue;
+    const key = normalizeName(r.name);
+    if(!key) continue;
+    const existing = bestByName.get(key);
+    if(!existing || (Number(r.score)||0) > (Number(existing.score)||0)){
+      bestByName.set(key, {name:r.name, score:Number(r.score)||0, correct:Number(r.correct)||0});
+    }
+  }
+  return Array.from(bestByName.values());
 }
 
-function getRank(name,score){
-  const idx=globalLB.findIndex(r=>r.name===name&&Number(r.score)===score);
-  return idx>=0?idx+1:globalLB.length+1;
-}
+// Eski kayıtları (varsa) isim bazlı tekilleştir
+leaderboard = dedupeLeaderboard(leaderboard);
+try{localStorage.setItem('cx_lb_v2',JSON.stringify(leaderboard))}catch(e){}
+
+function saveLB(){try{localStorage.setItem('cx_lb_v2',JSON.stringify(leaderboard))}catch(e){}}
 
 function renderLB(el,max){
-  const rows=globalLB.slice(0,max||50);
-  if(!rows.length){el.innerHTML='<p style="color:rgba(255,255,255,0.5);font-size:13px;text-align:center;padding:1rem">Henüz kayıt yok. İlk sen ol!</p>';return;}
-  const medals=['🥇','🥈','🥉'];
-  el.innerHTML=rows.map((r,i)=>{
-    const init=String(r.name).slice(0,2).toUpperCase();
-    const isMe=played&&r.name===played.name&&Number(r.score)===played.score;
-    return `<div class="leaderboard-row" style="${isMe?'background:rgba(255,255,255,0.12);border-radius:8px;padding:10px 8px;':''}">
+  const sorted=[...leaderboard].sort((a,b)=>b.score-a.score).slice(0,max||50);
+  if(!sorted.length){el.innerHTML='<p style="color:#999;font-size:13px;text-align:center;padding:1rem">Henüz kayıt yok. İlk sen ol!</p>';return;}
+  el.innerHTML=sorted.map((r,i)=>{
+    const medals=['🥇','🥈','🥉'];
+    const init=r.name.slice(0,2).toUpperCase();
+    const ci=i%5;
+    const isMe = played && normalizeName(r.name)===normalizeName(played.name);
+    return `<div class="leaderboard-row" style="${isMe?'background:#EEEDFE;border-radius:8px;padding:10px 8px;margin:-2px 0;':''}">
       <div class="rank">${medals[i]||i+1}</div>
-      <div class="avatar">${init}</div>
+      <div class="avatar" style="background:${COLORS[ci]};color:${CCOLORS[ci]}">${init}</div>
       <div class="lb-name">${r.name}${isMe?' 👈':''}</div>
       <div class="lb-score">${r.score}</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.5)">${r.correct}/10</div>
+      <div style="font-size:12px;color:#999">${r.correct}/10</div>
     </div>`;
   }).join('');
 }
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 
-window.onload=async function(){
-  await fetchLB();
+function getRank(name, score){
+  const sorted=[...leaderboard].sort((a,b)=>b.score-a.score);
+  return sorted.findIndex(r=>normalizeName(r.name)===normalizeName(name))+1;
+}
+
+// Sayfa açılınca kontrol et
+window.onload = function(){
   if(played){
-    const rank=getRank(played.name,played.score);
-    document.getElementById('played-name').textContent=played.name;
-    document.getElementById('played-score').textContent=played.score+' puan';
-    document.getElementById('played-correct').textContent=played.correct+' / 10';
-    document.getElementById('played-rank').textContent='#'+rank;
+    const rank = getRank(played.name, played.score);
+    document.getElementById('played-name').textContent = played.name;
+    document.getElementById('played-score').textContent = played.score + ' puan';
+    document.getElementById('played-correct').textContent = played.correct + ' / 10';
+    document.getElementById('played-rank').textContent = '#' + rank;
     show('s-played');
   } else {
-    renderLB(document.getElementById('intro-leaderboard'),3);
+    renderLB(document.getElementById('intro-leaderboard'),5);
     show('s-intro');
   }
 };
@@ -246,8 +238,24 @@ window.onload=async function(){
 function startGame(){
   const n=document.getElementById('player-name').value.trim();
   if(!n){document.getElementById('player-name').focus();return;}
+
+  // Aynı isimle daha önce kayıt varsa tekrar kayıt/oyun başlatma
+  const existing = leaderboard.find(r=>normalizeName(r.name)===normalizeName(n));
+  if(existing){
+    played = existing;
+    try{localStorage.setItem('cx_played', JSON.stringify(existing));}catch(e){}
+    const rank = getRank(existing.name, existing.score);
+    document.getElementById('played-name').textContent = existing.name;
+    document.getElementById('played-score').textContent = existing.score + ' puan';
+    document.getElementById('played-correct').textContent = existing.correct + ' / 10';
+    document.getElementById('played-rank').textContent = '#' + rank;
+    show('s-played');
+    return;
+  }
+
   state={name:n,q:0,score:0,correct:0,timeBonus:0,timer:null,answered:false};
-  show('s-game');loadQuestion();
+  show('s-game');
+  loadQuestion();
 }
 
 function loadQuestion(){
@@ -255,7 +263,7 @@ function loadQuestion(){
   state.answered=false;
   document.getElementById('q-counter').textContent=`Soru ${state.q+1} / ${QUESTIONS.length}`;
   document.getElementById('progress').style.width=`${(state.q/QUESTIONS.length)*100}%`;
-  document.getElementById('q-category').innerHTML=`<span class="badge">${q.cat}</span>`;
+  document.getElementById('q-category').innerHTML=`<span class="badge badge-purple">${q.cat}</span>`;
   document.getElementById('q-text').textContent=q.q;
   document.getElementById('q-feedback').style.display='none';
   document.getElementById('next-btn').style.display='none';
@@ -299,13 +307,33 @@ function showFeedback(ok,explain,label){
 
 function nextQuestion(){state.q++;if(state.q>=QUESTIONS.length)endGame();else loadQuestion();}
 
-async function endGame(){
+function endGame(){
   clearInterval(state.timer);
-  const record={name:state.name,score:state.score,correct:state.correct};
-  await saveToSheets(record);
-  await fetchLB();
-  try{localStorage.setItem('cx_played_v4',JSON.stringify(record));played=record;}catch(e){}
-  const rank=getRank(state.name,state.score);
+  const record = {name:state.name,score:state.score,correct:state.correct};
+
+  // Aynı isimle birden fazla kayıt oluşmasın: varsa güncelle (en iyi skor kalsın)
+  const idx = leaderboard.findIndex(r=>normalizeName(r.name)===normalizeName(record.name));
+  if(idx >= 0){
+    const prev = leaderboard[idx];
+    if((Number(record.score)||0) >= (Number(prev.score)||0)){
+      leaderboard[idx] = record;
+    } else {
+      // Daha düşük skor geldiyse, leaderboard'daki en iyi skor kalsın
+      record.score = prev.score;
+      record.correct = prev.correct;
+      record.name = prev.name;
+    }
+  } else {
+    leaderboard.push(record);
+  }
+  leaderboard = dedupeLeaderboard(leaderboard);
+  saveLB();
+
+  // Bir daha oynamaması için kaydet
+  played = record;
+  try{localStorage.setItem('cx_played', JSON.stringify(record));}catch(e){}
+
+  const rank = getRank(record.name, record.score);
   const pct=Math.round((state.correct/QUESTIONS.length)*100);
   let emoji='😔',title='Daha fazla pratik yap!',sub='Tebrikler, katıldığın için teşekkürler!';
   if(pct>=90){emoji='🏆';title='Mükemmel! CX uzmanısın!';sub='Neredeyse mükemmel bir performans!';}
@@ -317,20 +345,31 @@ async function endGame(){
   document.getElementById('r-score').textContent=state.score+' puan';
   document.getElementById('r-correct').textContent=`${state.correct} / ${QUESTIONS.length} (${pct}%)`;
   document.getElementById('r-time').textContent='+'+state.timeBonus+' puan';
-  document.getElementById('r-rank').textContent='#'+rank;
+  document.getElementById('r-rank').textContent=`#${rank}`;
   show('s-result');
 }
 
-async function showLeaderboard(){
-  document.getElementById('full-leaderboard').innerHTML='<div class="loading">Yükleniyor...</div>';
+function showLeaderboard(){
+  renderLB(document.getElementById('full-leaderboard'));
   show('s-leaderboard');
-  await fetchLB();
-  renderLB(document.getElementById('full-leaderboard'),3);
 }
 
 function backToStart(){
-  if(played){show('s-played');}
-  else{renderLB(document.getElementById('intro-leaderboard'),3);show('s-intro');}
+  if(played){
+    show('s-played');
+  } else {
+    renderLB(document.getElementById('intro-leaderboard'),5);
+    show('s-intro');
+  }
+}
+
+function playAgain(){
+  // Cihaz kilidini kaldır: farklı isimle tekrar oynanabilsin
+  played = null;
+  try{localStorage.removeItem('cx_played');}catch(e){}
+  document.getElementById('player-name').value = '';
+  renderLB(document.getElementById('intro-leaderboard'),5);
+  show('s-intro');
 }
 </script>
 </body>
